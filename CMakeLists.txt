@@ -23,5 +23,4 @@ include(CTest)
 include(GoogleTest)
 
 add_subdirectory(project)
-add_subdirectory(tests)
 
