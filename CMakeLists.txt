@@ -8,9 +8,11 @@ add_compile_definitions(
   $<$<CONFIG:DEBUG>:DEBUG>
 )
 
+include(CPack)
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
-include(CPack)
+
+include(CTest)
 
 include(FetchContent)
 FetchContent_Declare(googletest
@@ -19,7 +21,6 @@ FetchContent_Declare(googletest
 )
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE) # For Windows: Prevent overriding the parent project's compiler/linker settings
 FetchContent_MakeAvailable(googletest)
-include(CTest)
 include(GoogleTest)
 
 add_subdirectory(project)
