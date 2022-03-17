@@ -2,27 +2,12 @@ add_library(Board "")
 target_sources(Board
     PRIVATE
         board.cpp
+    PUBLIC
         board.h
-        #PUBLIC
         #$<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/board.h
         #$<INSTALL_INTERFACE:board.h
 )
-target_include_directories(Board PRIVATE ${CMAKE_CURRENT_LIST_DIR})
-
-install(TARGETS Board
-    EXPORT OthelloCppConfig
-    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-)
-export(TARGETS Board
-    NAMESPACE OthelloCpp::
-    FILE ${CMAKE_CURRENT_BINARY_DIR}/OthelloCppConfig.cmake
-)
-install(EXPORT OthelloCppConfig
-    DESTINATION OthelloCpp/cmake
-    NAMESPACE OthelloCpp::
-)
+target_include_directories(Board PUBLIC ${CMAKE_CURRENT_LIST_DIR})
 
 add_executable(BoardTest "")
 target_sources(BoardTest
