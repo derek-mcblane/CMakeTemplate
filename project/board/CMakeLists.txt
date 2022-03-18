@@ -3,9 +3,8 @@ target_sources(Board
     PRIVATE
         board.cpp
     PUBLIC
-        board.h
-        #$<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/board.h
-        #$<INSTALL_INTERFACE:board.h
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/board.h>
+        $<INSTALL_INTERFACE:board.h>
 )
 target_include_directories(Board PUBLIC ${CMAKE_CURRENT_LIST_DIR})
 
