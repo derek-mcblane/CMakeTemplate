@@ -4,6 +4,7 @@
 #include <bitset>
 #include <cstddef>
 #include <iostream>
+#include <vector>
 
 namespace othello {
 
@@ -33,7 +34,7 @@ struct Position {
 namespace bit_board {
 
 inline void display(const uint64_t& bits) {
-    std::cout << std::bitset<64>(bits).to_string() << std::endl;
+    std::cout << std::bitset<sizeof(uint64_t) * 8>(bits).to_string() << std::endl;
 }
 
 constexpr const uint64_t TOP_LEFT   = 0b10000000'00000000'00000000'00000000'00000000'00000000'00000000'00000000;
@@ -50,6 +51,10 @@ inline constexpr uint64_t position_mask(const Position& p) {
 
 inline constexpr bool test(const uint64_t& bits, const Position& p) {
     return bits & position_mask(p);
+}
+
+inline constexpr bool count(const uint64_t& bits) {
+    return std::bitset<sizeof(uint64_t) * 8>(bits).count();
 }
 
 inline void set(uint64_t& bits, const Position& p) {
@@ -70,6 +75,8 @@ uint64_t dilate(const uint64_t& bits, const size_t& n = 1) {
     }
     return dilated;
 }
+
+std::vector<Position> to_positions(const uint64_t& bits);
 
 } // namespace bit_board
 

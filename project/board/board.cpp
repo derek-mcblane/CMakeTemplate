@@ -67,6 +67,18 @@ uint64_t shift<LEFT>(const uint64_t& bits, const size_t& n) {
     return shifted;
 }
 
+std::vector<Position> to_positions(const uint64_t& bits) {
+    std::vector<Position> positions;
+    for (size_t row = 0; row < 8; row++) {
+        for (size_t col = 0; col < 8; col++) {
+            Position p{row, col};
+            if (position_mask(p) & bits)
+                positions.push_back(p);
+        }
+    }
+    return positions;
+}
+
 } // namespace bit_board
 
 std::ostream& operator<<(std::ostream& os, const GameBoard& board) {
