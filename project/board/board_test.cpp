@@ -96,34 +96,39 @@ TEST(Board, ValidMoves) {
 
     p = Position{3, 2};
     board.place_piece(BLACK, p);
+    std::cout << board << std::endl;
     ASSERT_EQ(board.at(p), BLACK);
+
 
     p = Position{2, 2};
     board.place_piece(WHITE, p);
+    std::cout << board << std::endl;
     ASSERT_EQ(board.at(p), WHITE);
 
     p = Position{2, 3};
     board.place_piece(BLACK, p);
+    std::cout << board << std::endl;
     ASSERT_EQ(board.at(p), BLACK);
 
     p = Position{2, 4};
     board.place_piece(WHITE, p);
+    std::cout << board << std::endl;
     ASSERT_EQ(board.at(p), WHITE);
 
     p = Position{4, 5};
     board.place_piece(BLACK, p);
+    std::cout << board << std::endl;
     ASSERT_EQ(board.at(p), BLACK);
 
     p = Position{5, 4};
     board.place_piece(WHITE, p);
+    std::cout << board << std::endl;
     ASSERT_EQ(board.at(p), WHITE);
 
     p = Position{1, 2};
     board.place_piece(BLACK, p);
+    std::cout << board << std::endl;
     ASSERT_EQ(board.at(p), BLACK);
-
-
-    ASSERT_FALSE(board.place_piece(WHITE, {7,7}));
 }
 
 } // namespace othello

@@ -1,39 +1,39 @@
 #include "board.h"
 
 namespace othello {
-
-Direction opposite(const Direction& d) {
-    switch (d) {
-    case RIGHT:
-        return LEFT;
-    case UP:
-        return DOWN;
-    case LEFT:
-        return RIGHT;
-    case DOWN:
-        return UP;
-    default:
-        return MAX_DIRECTION;
-    }
-}
-
 namespace bit_board {
 
+template <>
+bool on_edge<RIGHT>(const uint64_t& bits) {
+    return bits & RIGHT_EDGE;
+}
+template <>
+bool on_edge<UPRIGHT>(const uint64_t& bits) {
+    return bits & TOP_RIGHT;
+}
 template <>
 bool on_edge<UP>(const uint64_t& bits) {
     return bits & TOP_EDGE;
 }
 template <>
-bool on_edge<DOWN>(const uint64_t& bits) {
-    return bits & BOT_EDGE;
+bool on_edge<UPLEFT>(const uint64_t& bits) {
+    return bits & TOP_LEFT;
 }
 template <>
 bool on_edge<LEFT>(const uint64_t& bits) {
     return bits & LEFT_EDGE;
 }
 template <>
-bool on_edge<RIGHT>(const uint64_t& bits) {
-    return bits & RIGHT_EDGE;
+bool on_edge<DOWNLEFT>(const uint64_t& bits) {
+    return bits & BOT_LEFT;
+}
+template <>
+bool on_edge<DOWN>(const uint64_t& bits) {
+    return bits & BOT_EDGE;
+}
+template <>
+bool on_edge<DOWNRIGHT>(const uint64_t& bits) {
+    return bits & BOT_RIGHT;
 }
 
 template <>
@@ -65,6 +65,22 @@ uint64_t shift<LEFT>(const uint64_t& bits, const size_t& n) {
     shifted <<= (1 * n);
     shifted &= wall;
     return shifted;
+}
+template <>
+uint64_t shift<UPRIGHT>(const uint64_t& bits, const size_t& n) {
+    return shift<RIGHT>(shift<UP>(bits,n), n);
+}
+template <>
+uint64_t shift<UPLEFT>(const uint64_t& bits, const size_t& n) {
+    return shift<LEFT>(shift<UP>(bits,n), n);
+}
+template <>
+uint64_t shift<DOWNLEFT>(const uint64_t& bits, const size_t& n) {
+    return shift<LEFT>(shift<DOWN>(bits,n), n);
+}
+template <>
+uint64_t shift<DOWNRIGHT>(const uint64_t& bits, const size_t& n) {
+    return shift<RIGHT>(shift<DOWN>(bits,n), n);
 }
 
 std::vector<Position> to_positions(const uint64_t& bits) {

@@ -18,13 +18,15 @@ enum Color {
 enum Direction {
     MIN_DIRECTION = 0,
     RIGHT         = MIN_DIRECTION,
+    UPRIGHT,
     UP,
+    UPLEFT,
     LEFT,
+    DOWNLEFT,
     DOWN,
+    DOWNRIGHT,
     MAX_DIRECTION
 };
-
-Direction opposite(const Direction& d);
 
 struct Position {
     size_t row;
@@ -37,7 +39,10 @@ inline void display(const uint64_t& bits) {
     std::cout << std::bitset<sizeof(uint64_t) * 8>(bits).to_string() << std::endl;
 }
 
+constexpr const uint64_t TOP_RIGHT  = 0b00000001'00000000'00000000'00000000'00000000'00000000'00000000'00000000;
 constexpr const uint64_t TOP_LEFT   = 0b10000000'00000000'00000000'00000000'00000000'00000000'00000000'00000000;
+constexpr const uint64_t BOT_LEFT   = 0b00000000'00000000'00000000'00000000'00000000'00000000'00000000'10000000;
+constexpr const uint64_t BOT_RIGHT  = 0b00000000'00000000'00000000'00000000'00000000'00000000'00000000'00000001;
 constexpr const uint64_t TOP_EDGE   = 0b11111111'00000000'00000000'00000000'00000000'00000000'00000000'00000000;
 constexpr const uint64_t BOT_EDGE   = 0b00000000'00000000'00000000'00000000'00000000'00000000'00000000'11111111;
 constexpr const uint64_t LEFT_EDGE  = 0b10000000'10000000'10000000'10000000'10000000'10000000'10000000'10000000;
@@ -59,6 +64,10 @@ inline constexpr bool count(const uint64_t& bits) {
 
 inline void set(uint64_t& bits, const Position& p) {
     bits |= position_mask(p);
+}
+
+inline void reset(uint64_t& bits, const Position& p) {
+    bits &= ~position_mask(p);
 }
 
 template <Direction>
@@ -88,11 +97,15 @@ class GameBoard {
         set_up();
     }
 
-    void set_up() {
+    void clear() {
         white = 0;
+        black = 0;
+    }
+
+    void set_up() {
+        clear();
         bit_board::set(white, {3, 3});
         bit_board::set(white, {4, 4});
-        black = 0;
         bit_board::set(black, {4, 3});
         bit_board::set(black, {3, 4});
     }
@@ -110,30 +123,38 @@ class GameBoard {
             return MAX_COLOR;
     }
 
-    Bits vacant() const {
-        return !(white | black);
+    void set(const Position& p, const Color& c) {
+        if (c == WHITE) {
+            bit_board::set(white, p);
+            bit_board::reset(black, p);
+        } else if (c == BLACK) {
+            bit_board::set(black, p);
+            bit_board::reset(white, p);
+        } else if (c == NONE) {
+            bit_board::reset(white, p);
+            bit_board::reset(black, p);
+        }
     }
 
-    Bits valid_moves(const Color& c) {
-        return (directional_valid_moves_<RIGHT>(c) | directional_valid_moves_<UP>(c) |
-                directional_valid_moves_<LEFT>(c) | directional_valid_moves_<DOWN>(c));
+    Bits vacant() const {
+        return ~(white | black);
+    }
+
+    std::vector<Position> valid_moves(const Color& c) const {
+        Bits moves = (directional_valid_moves_<RIGHT>(c) | directional_valid_moves_<UPRIGHT>(c) |
+                      directional_valid_moves_<UP>(c) | directional_valid_moves_<UPLEFT>(c) |
+                      directional_valid_moves_<LEFT>(c) | directional_valid_moves_<DOWNLEFT>(c) |
+                      directional_valid_moves_<DOWN>(c) | directional_valid_moves_<DOWNRIGHT>(c));
+        return bit_board::to_positions(moves);
     }
 
     bool place_piece(Color c, const Position& p) {
         bool captured = capture_(c, p);
         if (captured) {
-            pieces_(c) |= bit_board::position_mask(p);
-            opposite_pieces_(c) |= ~bit_board::position_mask(p);
+            set(p, c);
         }
         return captured;
     }
-
-  private:
-    template <Direction D>
-    class State;
-
-    Bits white;
-    Bits black;
 
     Bits& pieces_(Color c) {
         return (c == WHITE) ? white : black;
@@ -145,11 +166,18 @@ class GameBoard {
         return (c == WHITE) ? black : white;
     }
     const Bits& opposite_pieces_(Color c) const {
-        return pieces_(c);
+        return opposite_pieces_(c);
     }
 
+  private:
     template <Direction D>
-    Bits directional_valid_moves_(const Color& c);
+    class State;
+
+    Bits white;
+    Bits black;
+
+    template <Direction D>
+    Bits directional_valid_moves_(const Color& c) const;
 
     template <Direction D>
     bool directional_capture_(const Color& c, const Position& p);
@@ -157,9 +185,13 @@ class GameBoard {
     bool capture_(const Color& c, const Position& p) {
         bool valid_move = false;
         valid_move |= directional_capture_<RIGHT>(c, p);
+        valid_move |= directional_capture_<UPRIGHT>(c, p);
         valid_move |= directional_capture_<UP>(c, p);
+        valid_move |= directional_capture_<UPLEFT>(c, p);
         valid_move |= directional_capture_<LEFT>(c, p);
+        valid_move |= directional_capture_<DOWNLEFT>(c, p);
         valid_move |= directional_capture_<DOWN>(c, p);
+        valid_move |= directional_capture_<DOWNRIGHT>(c, p);
         return valid_move;
     }
 
@@ -167,7 +199,7 @@ class GameBoard {
 };
 
 template <Direction D>
-GameBoard::Bits GameBoard::directional_valid_moves_(const Color& c) {
+GameBoard::Bits GameBoard::directional_valid_moves_(const Color& c) const {
     Bits moves      = 0;
     Bits candidates = opposite_pieces_(c) & bit_board::shift<D>(pieces_(c));
     while (candidates) {
@@ -197,7 +229,8 @@ template <Direction D>
 class GameBoard::State {
   public:
     State(const Color& color, GameBoard& board, const Position& start)
-        : my_pieces_(board.pieces_(color)), vacant_(board.vacant()), start(start) {}
+        : my_pieces_(board.pieces_(color)), vacant_(board.vacant()), start_(bit_board::position_mask(start)),
+          bits_(bit_board::position_mask(start)) {}
 
     void dilate();
     bool should_commit();
@@ -205,14 +238,14 @@ class GameBoard::State {
     Bits bits();
 
   private:
-    Position start;
+    Bits start_;
     Bits& my_pieces_;
     Bits vacant_;
 
     Bits bits_;
-    bool capped;
-    bool on_edge;
-    bool on_empty;
+    bool capped_;
+    bool on_edge_;
+    bool on_empty_;
 };
 
 template <Direction D>
@@ -222,17 +255,16 @@ void GameBoard::State<D>::dilate() {
 
 template <Direction D>
 bool GameBoard::State<D>::should_commit() {
-    return capped;
+    return capped_;
 }
 
 template <Direction D>
 bool GameBoard::State<D>::should_keep_dilating() {
-    Bits selected = ~(bit_board::position_mask(start) & bits_);
-    on_edge       = on_edge<D>(bits_);
-    capped        = my_pieces_ & selected;
-    on_empty      = vacant_ & selected;
-
-    return !(on_edge || capped || on_empty);
+    Bits selected_ = ~start_ & bits_;
+    on_edge_       = bit_board::on_edge<D>(bits_);
+    capped_        = my_pieces_ & selected_;
+    on_empty_      = vacant_ & selected_;
+    return !(on_edge_ || capped_ || on_empty_);
 }
 
 template <Direction D>
