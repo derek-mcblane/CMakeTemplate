@@ -1,8 +1,1 @@
-tags
-compile_commands.json
-
-Release/
-Debug/
-
-.DS_Store
-
+build*/
