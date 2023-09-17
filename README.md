@@ -1,14 +1,6 @@
-# Build
-## Bash + CMake
-```
-./configure.sh
-./build.sh
-```
-
-## CMake
+## Build
 ```
 cmake -S . -B build
 cmake --build build
 ```
-
 
