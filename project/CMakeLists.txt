@@ -1,8 +1,9 @@
-add_executable(MyProgram
+project(MyProgram)
+add_executable(${PROJECT_NAME}
     main.cpp
 )
-target_compile_features(MyProgram PUBLIC cxx_std_20)
-target_compile_options(MyProgram PUBLIC ${PROJECT_WARNING_OPTIONS})
+target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_20)
+target_compile_options(${PROJECT_NAME} PUBLIC ${PROJECT_WARNING_OPTIONS})
 
-install(TARGETS MyProgram RUNTIME)
+install(TARGETS ${PROJECT_NAME} RUNTIME)
 

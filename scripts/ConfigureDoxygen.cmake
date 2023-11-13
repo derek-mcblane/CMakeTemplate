@@ -1,0 +1,1 @@
+configure_file(${DOXY_CONFIG_FILE_IN} ${DOXY_CONFIG_FILE} @ONLY)

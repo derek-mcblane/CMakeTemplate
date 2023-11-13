@@ -1,0 +1,8 @@
+macro(check_parse_arguments PREFIX)
+    if (NOT ${${PREFIX}_UNPARSED_ARGUMENTS} STREQUAL "")
+        message(FATAL_ERROR ${PREFIX} "_UNPARSED_ARGUMENTS:" ${${PREFIX}_UNPARSED_ARGUMENTS})
+    endif()
+    if (NOT ${${PREFIX}_KEYWORDS_MISSING_VALUES} STREQUAL "")
+        message(FATAL_ERROR ${PREFIX} "_KEYWORDS_MISSING_VALUES:" ${${PREFIX}_KEYWORDS_MISSING_VALUES})
+    endif()
+endmacro()

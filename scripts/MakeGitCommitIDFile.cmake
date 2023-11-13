@@ -1,0 +1,6 @@
+execute_process(
+    COMMAND git rev-parse HEAD
+    OUTPUT_VARIABLE GIT_COMMIT_ID
+)
+
+file(CONFIGURE OUTPUT ${GIT_COMMIT_ID_FILE} CONTENT "\@GIT_COMMIT_ID\@")

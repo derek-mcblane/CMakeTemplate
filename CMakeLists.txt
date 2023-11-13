@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.15.0)
+cmake_minimum_required(VERSION 3.25.0)
 
 project(MyProject VERSION 0.1.0)
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/cmake)
@@ -15,24 +15,18 @@ add_compile_definitions(
   $<$<CONFIG:DEBUG>:DEBUG>
 )
 
-set(GIT_COMMMIT_ID_FILE_IN "${CMAKE_SOURCE_DIR}/cmake/git_commit_id.txt.in")
-cmake_path(REMOVE_EXTENSION GIT_COMMIT_ID_FILE_IN LAST_ONLY OUTPUT_VARIABLE GIT_COMMIT_ID_FILE)
+set(GIT_COMMIT_ID_FILE ${CMAKE_CURRENT_BINARY_DIR}/git_commit_id.txt)
 add_custom_command(
     OUTPUT ${GIT_COMMIT_ID_FILE}
     COMMAND ${CMAKE_COMMAND}
-        -DGIT_COMMIT_ID_FILE_IN=${GIT_COMMIT_ID_FILE_IN}
         -DGIT_COMMIT_ID_FILE=${GIT_COMMIT_ID_FILE}
-        -P ${CMAKE_SOURCE_DIR}/cmake/MakeGitCommitIDFile.cmake
-    COMMENT "Updating ${GIT_COMMIT_ID_FILE_IN}"
+        -P ${MyProject_SOURCE_DIR}/scripts/MakeGitCommitIDFile.cmake
+    COMMENT "Updating ${GIT_COMMIT_ID_FILE}"
     VERBATIM
 )
 add_custom_target(GitCommitIDFile DEPENDS ${GIT_COMMIT_ID_FILE})
 
-add_executable(GitCommitTest
-    
-)
-add_dependencies(GitCommitTest ${GIT_COMMIT_ID_FILE} GitCommitIDFile)
-
+add_subdirectory(doc)
 add_subdirectory(project)
 
 option(ENABLE_TESTING "Enable testing for ${PROJECT_NAME}" ON)
