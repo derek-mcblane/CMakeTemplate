@@ -12,7 +12,7 @@ set(PROJECT_WARNING_OPTIONS
 )
 
 add_compile_definitions(
-  $<$<CONFIG:DEBUG>:DEBUG>
+    $<$<CONFIG:DEBUG>:${PROJECT_NAME}_DEBUG>
 )
 
 set(GIT_COMMIT_ID_FILE ${CMAKE_CURRENT_BINARY_DIR}/git_commit_id.txt)
@@ -28,8 +28,9 @@ add_custom_target(GitCommitIDFile
 add_subdirectory(doc EXCLUDE_FROM_ALL)
 add_subdirectory(project)
 
-option(ENABLE_TESTING "Enable testing for ${PROJECT_NAME}" ON)
-if (ENABLE_TESTING)
+option(${PROJECT_NAME}_ENABLE_TESTING "Enable testing for ${PROJECT_NAME}" ON)
+if (${${PROJECT_NAME}_ENABLE_TESTING})
+    message(FATAL_ERROR "hi")
     enable_testing()
     add_subdirectory(tests)
 endif()
