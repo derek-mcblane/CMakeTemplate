@@ -1,0 +1,85 @@
+{
+  "version": 6,
+  "configurePresets": [
+    {
+      "name": "debug",
+      "binaryDir": "${sourceDir}/build/debug",
+      "installDir": "${sourceDir}/install/debug",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+      }
+    },
+    {
+      "name": "release",
+      "binaryDir": "${sourceDir}/build/release",
+      "installDir": "${sourceDir}/install/release",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "debug",
+      "configurePreset": "debug",
+      "jobs": 8
+    },
+    {
+      "name": "debug-install",
+      "configurePreset": "debug",
+      "targets": "install"
+    },
+    {
+      "name": "release",
+      "configurePreset": "release",
+      "jobs": 8
+    },
+    {
+      "name": "release-install",
+      "configurePreset": "release",
+      "targets": "install"
+    }
+  ],
+  "workflowPresets": [
+    {
+        "name": "release",
+        "displayName": "Release Build and Install",
+        "description": "configure, build, and install the release configuration",
+        "steps": [
+            {
+                "type": "configure",
+                "name": "release"
+            },
+            {
+                "type": "build",
+                "name": "release"
+            },
+            {
+                "type": "build",
+                "name": "release-install"
+            }
+        ]
+    },
+    {
+        "name": "debug",
+        "displayName": "Debug Build and Install",
+        "description": "configure, build, and install the debug configuration",
+        "steps": [
+            {
+                "type": "configure",
+                "name": "debug"
+            },
+            {
+                "type": "build",
+                "name": "debug"
+            },
+            {
+                "type": "build",
+                "name": "debug-install"
+            }
+        ]
+    }
+  ]
+}
