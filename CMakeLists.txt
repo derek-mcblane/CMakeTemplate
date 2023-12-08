@@ -16,17 +16,16 @@ add_compile_definitions(
 )
 
 set(GIT_COMMIT_ID_FILE ${CMAKE_CURRENT_BINARY_DIR}/git_commit_id.txt)
-add_custom_command(
-    OUTPUT ${GIT_COMMIT_ID_FILE}
+add_custom_target(GitCommitIDFile
     COMMAND ${CMAKE_COMMAND}
         -DGIT_COMMIT_ID_FILE=${GIT_COMMIT_ID_FILE}
         -P ${MyProject_SOURCE_DIR}/scripts/MakeGitCommitIDFile.cmake
+    BYPRODUCTS ${GIT_COMMIT_ID_FILE}
     COMMENT "Updating ${GIT_COMMIT_ID_FILE}"
     VERBATIM
 )
-add_custom_target(GitCommitIDFile DEPENDS ${GIT_COMMIT_ID_FILE})
 
-add_subdirectory(doc)
+add_subdirectory(doc EXCLUDE_FROM_ALL)
 add_subdirectory(project)
 
 option(ENABLE_TESTING "Enable testing for ${PROJECT_NAME}" ON)
