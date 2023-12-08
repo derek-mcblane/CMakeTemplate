@@ -18,17 +18,11 @@ add_compile_definitions(
     $<$<CONFIG:DEBUG>:MyProject_DEBUG>
 )
 
-execute_process(
-    COMMAND git rev-parse --show-toplevel
-    OUTPUT_VARIABLE MyProject_GIT_REPO_ROOT
-    OUTPUT_STRIP_TRAILING_WHITESPACE
-)
-
 set(GIT_COMMIT_ID_FILE ${CMAKE_CURRENT_BINARY_DIR}/git_commit_id.txt)
 add_custom_target(GitCommitIDFile
     COMMAND ${CMAKE_COMMAND}
         -DGIT_COMMIT_ID_FILE=${GIT_COMMIT_ID_FILE}
-        -P ${MyProject_GIT_REPO_ROOT}/scripts/MakeGitCommitIDFile.cmake
+        -P ${PROJECT_SOURCE_DIR}/scripts/MakeGitCommitIDFile.cmake
     BYPRODUCTS ${GIT_COMMIT_ID_FILE}
     COMMENT "Updating ${GIT_COMMIT_ID_FILE}"
     VERBATIM
