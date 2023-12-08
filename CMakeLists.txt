@@ -19,22 +19,19 @@ set(GIT_COMMIT_ID_FILE ${CMAKE_CURRENT_BINARY_DIR}/git_commit_id.txt)
 add_custom_target(GitCommitIDFile
     COMMAND ${CMAKE_COMMAND}
         -DGIT_COMMIT_ID_FILE=${GIT_COMMIT_ID_FILE}
-        -P ${MyProject_SOURCE_DIR}/scripts/MakeGitCommitIDFile.cmake
+        -P ${${PROJECT_NAME}_SOURCE_DIR}/scripts/MakeGitCommitIDFile.cmake
     BYPRODUCTS ${GIT_COMMIT_ID_FILE}
     COMMENT "Updating ${GIT_COMMIT_ID_FILE}"
     VERBATIM
 )
 
 add_subdirectory(doc EXCLUDE_FROM_ALL)
-add_subdirectory(project)
+add_subdirectory(source)
 
 option(${PROJECT_NAME}_ENABLE_TESTING "Enable testing for ${PROJECT_NAME}" ON)
 if (${${PROJECT_NAME}_ENABLE_TESTING})
-    message(FATAL_ERROR "hi")
     enable_testing()
     add_subdirectory(tests)
 endif()
 
-set(CPACK_PROJECT_NAME ${PROJECT_NAME})
-set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
 include(CPack)

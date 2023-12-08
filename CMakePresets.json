@@ -2,21 +2,26 @@
   "version": 6,
   "configurePresets": [
     {
+        "name": "base",
+        "hidden": true,
+        "binaryDir": "${sourceDir}/build/${presetName}",
+        "installDir": "${sourceDir}/install/${presetName}",
+        "cacheVariables": {
+          "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+        }
+    },
+    {
       "name": "debug",
-      "binaryDir": "${sourceDir}/build/debug",
-      "installDir": "${sourceDir}/install/debug",
+      "inherits": ["base"],
       "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Debug",
-        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+        "CMAKE_BUILD_TYPE": "Debug"
       }
     },
     {
       "name": "release",
-      "binaryDir": "${sourceDir}/build/release",
-      "installDir": "${sourceDir}/install/release",
+      "inherits": ["base"],
       "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Release",
-        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+        "CMAKE_BUILD_TYPE": "Release"
       }
     }
   ],
