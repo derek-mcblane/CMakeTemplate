@@ -1,6 +1,6 @@
 ## CMake Buildsystem
 ### CMake Workflow
-This will configure, build, test, and install to a local "install" directory. The build directory will be `./build/<preset-name>`, so `build/release` in this case.
+This will configure, build, test, and install to a local directory: `install`. The build directory will be `./build/<preset-name>`, so `build/release` in this case.
 ```bash
 cmake --workflow --preset=release
 ```
