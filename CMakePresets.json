@@ -52,12 +52,7 @@
       "targets": "install"
     },
     {
-      "name": "debug-doxygen",
-      "configurePreset": "debug",
-      "targets": "doxygen"
-    },
-    {
-      "name": "release-doxygen",
+      "name": "doxygen",
       "configurePreset": "release",
       "targets": "doxygen"
     }
@@ -130,8 +125,8 @@
       ]
     },
     {
-      "name": "release-doxygen",
-      "displayName": "release - Doxygen documentation",
+      "name": "doxygen",
+      "displayName": "Doxygen documentation",
       "description": "configure, generate documentation with Doxygen",
       "steps": [
         {
@@ -140,22 +135,7 @@
         },
         {
           "type": "build",
-          "name": "release-doxygen"
-        }
-      ]
-    },
-    {
-      "name": "debug-doxygen",
-      "displayName": "debug - Doxygen documentation",
-      "description": "configure, generate documentation with Doxygen",
-      "steps": [
-        {
-          "type": "configure",
-          "name": "debug"
-        },
-        {
-          "type": "build",
-          "name": "debug-doxygen"
+          "name": "doxygen"
         }
       ]
     }

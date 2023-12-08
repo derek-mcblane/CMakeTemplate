@@ -43,7 +43,7 @@ add_custom_command(
 )
 
 add_custom_target(doxygen
-    COMMAND echo ${DOXY_CONFIG_FILE}
+    COMMAND doxygen ${DOXY_CONFIG_FILE}
     DEPENDS  ${GIT_COMMIT_ID_FILE} GitCommitIDFile ${DOXY_CONFIG_FILE}
     COMMENT "Generating documentation with `doxygen ${DOXY_CONFIG_FILE}`"
     VERBATIM
