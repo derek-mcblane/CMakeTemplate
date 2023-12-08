@@ -15,12 +15,18 @@ add_compile_definitions(
   $<$<CONFIG:DEBUG>:DEBUG>
 )
 
+execute_process(
+    COMMAND git rev-parse --show-toplevel
+    OUTPUT_VARIABLE ${PROJECT_NAME}_GIT_REPO_ROOT
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+
 set(GIT_COMMIT_ID_FILE ${CMAKE_CURRENT_BINARY_DIR}/git_commit_id.txt)
 add_custom_command(
     OUTPUT ${GIT_COMMIT_ID_FILE}
     COMMAND ${CMAKE_COMMAND}
         -DGIT_COMMIT_ID_FILE=${GIT_COMMIT_ID_FILE}
-        -P ${MyProject_SOURCE_DIR}/scripts/MakeGitCommitIDFile.cmake
+        -P ${${PROJECT_NAME}_GIT_REPO_ROOT}/scripts/MakeGitCommitIDFile.cmake
     COMMENT "Updating ${GIT_COMMIT_ID_FILE}"
     VERBATIM
 )
@@ -35,6 +41,30 @@ if (ENABLE_TESTING)
     add_subdirectory(tests)
 endif()
 
-set(CPACK_PROJECT_NAME ${PROJECT_NAME})
-set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
+export(EXPORT ${PROJECT_NAME}Targets
+    NAMESPACE ${PROJECT_NAME}::
+)
+install(EXPORT ${PROJECT_NAME}Targets
+    NAMESPACE ${PROJECT_NAME}::
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}
+)
+
+write_basic_package_version_file(
+    ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
+    VERSION ${PROJECT_VERSION}
+    COMPATIBILITY SameMajorVersion 
+)
+configure_package_config_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}Config.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
+    INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}
+)
+install(FILES
+    ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}
+)
+
+export(PACKAGE ${PROJECT_NAME})
+
 include(CPack)

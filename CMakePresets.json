@@ -27,25 +27,35 @@
       "jobs": 8
     },
     {
-      "name": "debug-install",
-      "configurePreset": "debug",
-      "targets": "install"
-    },
-    {
       "name": "release",
       "configurePreset": "release",
       "jobs": 8
     },
     {
+      "name": "debug-install",
+      "configurePreset": "debug",
+      "targets": "install"
+    },
+    {
       "name": "release-install",
       "configurePreset": "release",
       "targets": "install"
+    },
+    {
+      "name": "debug-doxygen",
+      "configurePreset": "debug",
+      "targets": "doxygen"
+    },
+    {
+      "name": "release-doxygen",
+      "configurePreset": "release",
+      "targets": "doxygen"
     }
   ],
   "workflowPresets": [
     {
         "name": "release",
-        "displayName": "Release Build and Install",
+        "displayName": "release - build and install",
         "description": "configure, build, and install the release configuration",
         "steps": [
             {
@@ -64,7 +74,7 @@
     },
     {
         "name": "debug",
-        "displayName": "Debug Build and Install",
+        "displayName": "debug - build and install",
         "description": "configure, build, and install the debug configuration",
         "steps": [
             {
@@ -78,6 +88,36 @@
             {
                 "type": "build",
                 "name": "debug-install"
+            }
+        ]
+    },
+    {
+        "name": "release-doxygen",
+        "displayName": "release - Doxygen documentation",
+        "description": "configure, generate documentation with Doxygen",
+        "steps": [
+            {
+                "type": "configure",
+                "name": "release"
+            },
+            {
+                "type": "build",
+                "name": "release-doxygen"
+            }
+        ]
+    },
+    {
+        "name": "debug-doxygen",
+        "displayName": "debug - Doxygen documentation",
+        "description": "configure, generate documentation with Doxygen",
+        "steps": [
+            {
+                "type": "configure",
+                "name": "debug"
+            },
+            {
+                "type": "build",
+                "name": "debug-doxygen"
             }
         ]
     }
