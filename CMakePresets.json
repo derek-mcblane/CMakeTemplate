@@ -12,14 +12,14 @@
     },
     {
       "name": "debug",
-      "inherits": ["base"],
+      "inherits": "base",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug"
       }
     },
     {
       "name": "release",
-      "inherits": ["base"],
+      "inherits": "base",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Release"
       }
@@ -27,14 +27,19 @@
   ],
   "buildPresets": [
     {
-      "name": "debug",
-      "configurePreset": "debug",
+      "name": "base",
+      "hidden": true,
       "jobs": 8
     },
     {
+      "name": "debug",
+      "inherits": "base",
+      "configurePreset": "debug"
+    },
+    {
       "name": "release",
-      "configurePreset": "release",
-      "jobs": 8
+      "inherits": "base",
+      "configurePreset": "release"
     },
     {
       "name": "debug-install",
@@ -57,74 +62,102 @@
       "targets": "doxygen"
     }
   ],
+  "testPresets": [
+    {
+      "name": "base",
+      "hidden": true,
+      "output" : {
+        "shortProgress": true,
+        "outputOnFailure": true
+      }
+    },
+    {
+      "name": "debug",
+      "inherits": "base",
+      "configurePreset": "debug"
+    },
+    {
+      "name": "release",
+      "inherits": "base",
+      "configurePreset": "release"
+    }
+  ],
   "workflowPresets": [
     {
-        "name": "release",
-        "displayName": "release - build and install",
-        "description": "configure, build, and install the release configuration",
-        "steps": [
-            {
-                "type": "configure",
-                "name": "release"
-            },
-            {
-                "type": "build",
-                "name": "release"
-            },
-            {
-                "type": "build",
-                "name": "release-install"
-            }
-        ]
+      "name": "debug",
+      "displayName": "debug - build and install",
+      "description": "configure, build, and install the debug configuration",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "debug"
+        },
+        {
+          "type": "build",
+          "name": "debug"
+        },
+        {
+          "type": "test",
+          "name": "debug"
+        },
+        {
+          "type": "build",
+          "name": "debug-install"
+        }
+      ]
     },
     {
-        "name": "debug",
-        "displayName": "debug - build and install",
-        "description": "configure, build, and install the debug configuration",
-        "steps": [
-            {
-                "type": "configure",
-                "name": "debug"
-            },
-            {
-                "type": "build",
-                "name": "debug"
-            },
-            {
-                "type": "build",
-                "name": "debug-install"
-            }
-        ]
+      "name": "release",
+      "displayName": "release - build and install",
+      "description": "configure, build, and install the release configuration",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "release"
+        },
+        {
+          "type": "build",
+          "name": "release"
+        },
+        {
+          "type": "test",
+          "name": "release"
+        },
+        {
+          "type": "build",
+          "name": "release-install"
+        }
+      ]
     },
     {
-        "name": "release-doxygen",
-        "displayName": "release - Doxygen documentation",
-        "description": "configure, generate documentation with Doxygen",
-        "steps": [
-            {
-                "type": "configure",
-                "name": "release"
-            },
-            {
-                "type": "build",
-                "name": "release-doxygen"
-            }
-        ]
+      "name": "release-doxygen",
+      "displayName": "release - Doxygen documentation",
+      "description": "configure, generate documentation with Doxygen",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "release"
+        },
+        {
+          "type": "build",
+          "name": "release-doxygen"
+        }
+      ]
     },
     {
-        "name": "debug-doxygen",
-        "displayName": "debug - Doxygen documentation",
-        "description": "configure, generate documentation with Doxygen",
-        "steps": [
-            {
-                "type": "configure",
-                "name": "debug"
-            },
-            {
-                "type": "build",
-                "name": "debug-doxygen"
-            }
-        ]
+      "name": "debug-doxygen",
+      "displayName": "debug - Doxygen documentation",
+      "description": "configure, generate documentation with Doxygen",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "debug"
+        },
+        {
+          "type": "build",
+          "name": "debug-doxygen"
+        }
+      ]
     }
   ]
 }
