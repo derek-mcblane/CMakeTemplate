@@ -2,14 +2,16 @@ include(ConvertBoolToYesNo)
 
 set(DOXY_CONFIG_FILE_IN ${CMAKE_CURRENT_LIST_DIR}/Doxyfile.in CACHE FILEPATH "Doxygen configuration templated for use with CMake configure_file")
 
-set(DOXY_USE_CLANG ON CACHE BOOL
+set(DOXY_USE_CLANG OFF CACHE BOOL
     "set CLANG_ASSISTED_PARSING = YES, and rely fully on compilation database for input paths")
 convert_bool_to_yes_no(${DOXY_USE_CLANG} OUTPUT_VARIABLE DOXY_CLANG_ASSISTED_PARSING)
 message(INFO ${DOXY_CLANG_ASSISTED_PARSING})
 set(DOXY_CLANG_OPTIONS "" CACHE STRING
     "doxygen CLANG_OPTIONS setting")
-set(DOXY_INPUT "" CACHE STRING
+set(DOXY_INPUT_DIRECTORY ${${PROJECT_NAME}_GIT_REPO_ROOT}/source CACHE PATH
     "doxygen INPUT setting (overriden by DOXY_USE_CLANG)")
+cmake_path(NATIVE_PATH DOXY_INPUT_DIRECTORY DOXY_INPUT)
+set(DOXY_INPUT \"${DOXY_INPUT}\")
 set(DOXY_EXCLUDE "" CACHE STRING
     "doxygen EXCLUDE setting")
 set(DOXY_EXCLUDE_PATTERNS "" CACHE STRING
@@ -34,7 +36,7 @@ add_custom_command(
         -DDOXY_CLANG_DATABASE_PATH=${CMAKE_BINARY_DIR}
         -DDOXY_CLANG_OPTIONS=${DOXY_CLANG_OPTIONS}
         -DGIT_COMMIT_ID_FILE=${GIT_COMMIT_ID_FILE}
-        -P ${MyProject_SOURCE_DIR}/scripts/ConfigureDoxygen.cmake
+        -P ${${PROJECT_NAME}_GIT_REPO_ROOT}/scripts/ConfigureDoxygen.cmake
     DEPENDS ${DOXY_CONFIG_FILE_IN} ${GIT_COMMIT_ID_FILE} GitCommitIDFile
     COMMENT "Configuring ${DOXY_CONFIG_FILE} with CMake"
     VERBATIM
