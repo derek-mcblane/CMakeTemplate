@@ -81,7 +81,7 @@
     {
       "name": "debug",
       "displayName": "debug - build and install",
-      "description": "configure, build, and install the debug configuration",
+      "description": "configure, build, test, and install the debug configuration",
       "steps": [
         {
           "type": "configure",
@@ -104,7 +104,7 @@
     {
       "name": "release",
       "displayName": "release - build and install",
-      "description": "configure, build, and install the release configuration",
+      "description": "configure, build, test, and install the release configuration",
       "steps": [
         {
           "type": "configure",
